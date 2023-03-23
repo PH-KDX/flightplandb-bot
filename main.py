@@ -30,4 +30,4 @@ async def on_guild_available(ctx):
 async def on_ready():
     log.info(f"Bot is logged in and ready as {bot.user.name}#{bot.user.discriminator}")
 
-bot.run(token=TOKEN, log_level=logging.INFO)
+bot.run(token=DISCORD_TOKEN, log_level=logging.INFO)
