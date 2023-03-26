@@ -18,13 +18,21 @@ TEST_GUILD_TWO = discord.Object(id=1088169718038417501)
 async def first_command(interaction):
     await interaction.response.send_message("Hello!")
 
+extensions = ["utils"]
+
+@bot.event
+async def setup_hook():
+    for extension in extensions:
+        log.info(f"loading bot extension {extension}")
+        await bot.load_extension("utils")
+
 @bot.event
 async def on_guild_available(ctx):
+    bot.tree.copy_global_to(guild=ctx)
     # since on_ready can be called in a restart, the tree sync is run on the first guild join
     log.info(f"starting command tree sync for guild {ctx.id}")
     await bot.tree.sync(guild=ctx)
     log.info(f"command tree sync completed for guild {ctx.id}")
-
 
 @bot.event
 async def on_ready():
