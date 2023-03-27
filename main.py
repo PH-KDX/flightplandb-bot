@@ -1,4 +1,4 @@
-from env.token import DISCORD_TOKEN
+from env.token import DISCORD_TOKEN, API_TOKEN
 
 import asyncio
 import datetime
@@ -8,6 +8,7 @@ from discord.ext import commands
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix=None, intents=intents)
+bot.fpdb_token = API_TOKEN
 
 log = logging.getLogger("discord")
 
@@ -18,13 +19,13 @@ TEST_GUILD_TWO = discord.Object(id=1088169718038417501)
 async def first_command(interaction):
     await interaction.response.send_message("Hello!")
 
-extensions = ["utils"]
+extensions = ["utils", "planning"]
 
 @bot.event
 async def setup_hook():
     for extension in extensions:
         log.info(f"loading bot extension {extension}")
-        await bot.load_extension("utils")
+        await bot.load_extension(extension)
 
 @bot.event
 async def on_guild_available(ctx):
