@@ -1,1 +1,2 @@
 discord.py>=2.0.0
+flightplandb~=0.7.0,>=0.7.2
