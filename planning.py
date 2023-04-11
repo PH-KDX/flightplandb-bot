@@ -36,24 +36,40 @@ class PlanSearchView(discord.ui.View):
     async def on_timeout(self) -> None:
         await self.disable_components()
 
+    async def format_results_embed(self, plan_search_results: list[fpdb.datatypes.Plan]) -> Embed:
+        message_embed = Embed(title="Plan search results", description="The top 5 results are shown in the format 'ID: route'")
+        for result in plan_search_results:
+            message_embed.add_field(
+                name=result.id,
+                value=" ".join([wpt.ident for wpt in result.route.nodes]),
+                inline=False,
+            )
+        return message_embed
+
     @discord.ui.button(label="Search for real plans with these parameters")
-    async def example_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def real_plans_search(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.disable_components()
-        plan_search_results = [plan async for plan in find_plans(departure_icao=self.dep_icao, arrival_icao=self.arr_icao, token=self.fpdb_token)]
-        pprint(plan_search_results)
+        plan_search_results = [plan async for plan in find_plans(departure_icao=self.dep_icao, arrival_icao=self.arr_icao, token=self.fpdb_token, real_only=True)]
         if not plan_search_results:
             await interaction.response.send_message(
-                "Unfortunately, no real-world plans were found for this route. Please search for generated plans instead.",
+                "Unfortunately, no real-world plans were found for this route. Would you like to generate a plan instead?.",
                 ephemeral=True,
             )
         else:
-            message_embed = Embed(title="Plan search results", description="The results are shown in the format 'ID: route'")
-            for result in plan_search_results:
-                message_embed.add_field(
-                    name=result.id,
-                    value=" ".join([wpt.ident for wpt in result.route.nodes]),
-                    inline=False,
-                )
+            message_embed = await self.format_results_embed(plan_search_results)
+            await interaction.response.send_message(embed=message_embed, ephemeral=True)
+
+    @discord.ui.button(label="Search for generated plans with these parameters")
+    async def generated_plans_search(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await self.disable_components()
+        plan_search_results = [plan async for plan in find_plans(departure_icao=self.dep_icao, arrival_icao=self.arr_icao, token=self.fpdb_token, real_only=False)]
+        if not plan_search_results:
+            await interaction.response.send_message(
+                "Unfortunately, no generated plans were found for this route.",
+                ephemeral=True,
+            )
+        else:
+            message_embed = await self.format_results_embed(plan_search_results)
             await interaction.response.send_message(embed=message_embed, ephemeral=True)
 
 class PlanSearchModal(ui.Modal):
