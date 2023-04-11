@@ -3,6 +3,7 @@ from discord import app_commands, ui, Embed
 from discord.ext import commands
 import flightplandb as fpdb
 
+
 async def find_plans(departure_icao: str, arrival_icao: str, token: str | None = None, real_only: bool = True) -> list[fpdb.datatypes.Plan]:
     plans = fpdb.plan.search(
         plan_query=fpdb.datatypes.PlanQuery(
@@ -16,6 +17,7 @@ async def find_plans(departure_icao: str, arrival_icao: str, token: str | None =
     )
     async for plan in plans:
         yield plan
+
 
 class PlanSearchView(discord.ui.View):
     def __init__(self, *args, fpdb_token=None, dep_icao=None, arr_icao=None, **kwargs):
@@ -71,6 +73,7 @@ class PlanSearchView(discord.ui.View):
             message_embed = await self.format_results_embed(plan_search_results)
             await interaction.response.send_message(embed=message_embed, ephemeral=True)
 
+
 class PlanSearchModal(ui.Modal):
     def __init__(self, fpdb_token=None) -> None:
         super().__init__(title='Plan search')
@@ -78,7 +81,8 @@ class PlanSearchModal(ui.Modal):
 
     dep_icao = ui.TextInput(label='Departure ICAO', required=True)
     arr_icao = ui.TextInput(label='Arrival ICAO', required=True)
-    async def on_submit(self,interaction: discord.Interaction):
+
+    async def on_submit(self, interaction: discord.Interaction):
         view = PlanSearchView(fpdb_token=self.fpdb_token, dep_icao=self.dep_icao.value, arr_icao=self.arr_icao.value, timeout=30)
         inputted_data_embed = Embed(title="Plan search")
         inputted_data_embed.add_field(name="Departure ICAO", value=self.dep_icao)
@@ -90,14 +94,16 @@ class PlanSearchModal(ui.Modal):
         )
         view.message = await interaction.original_response()
 
+
 class PlanningCog(commands.Cog, name="planning"):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-    
+
     @app_commands.command(name="plan")
     async def my_command(self, interaction: discord.Interaction) -> None:
         """ Search for plans """
         await interaction.response.send_modal(PlanSearchModal(fpdb_token=self.bot.fpdb_token))
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(PlanningCog(bot))

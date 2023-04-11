@@ -15,11 +15,13 @@ TEST_GUILD_TWO = discord.Object(id=1088169718038417501)
 
 extensions = ["utils", "planning"]
 
+
 @bot.event
 async def setup_hook():
     for extension in extensions:
         log.info(f"loading bot extension {extension}")
         await bot.load_extension(extension)
+
 
 @bot.event
 async def on_guild_available(ctx):
@@ -29,8 +31,10 @@ async def on_guild_available(ctx):
     await bot.tree.sync(guild=ctx)
     log.info(f"command tree sync completed for guild {ctx.id}")
 
+
 @bot.event
 async def on_ready():
     log.info(f"Bot is logged in and ready as {bot.user.name}#{bot.user.discriminator}")
+
 
 bot.run(token=DISCORD_TOKEN, log_level=logging.INFO)
