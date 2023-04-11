@@ -2,7 +2,6 @@ import discord
 from discord import app_commands, ui, Embed
 from discord.ext import commands
 import flightplandb as fpdb
-from pprint import pprint
 
 async def find_plans(departure_icao: str, arrival_icao: str, token: str | None = None, real_only: bool = True) -> list[fpdb.datatypes.Plan]:
     plans = fpdb.plan.search(

@@ -1,7 +1,5 @@
 from env.token import DISCORD_TOKEN, API_TOKEN
 
-import asyncio
-import datetime
 import logging
 import discord
 from discord.ext import commands
