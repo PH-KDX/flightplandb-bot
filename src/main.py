@@ -4,9 +4,10 @@ import discord
 from discord.ext import commands
 
 with open("../.credentials") as secrets_file:
-    with json.load(secrets_file) as secrets:
-        DISCORD_TOKEN = secrets["DISCORD_TOKEN"]
-        API_TOKEN = secrets["API_TOKEN"]
+    secrets = json.load(secrets_file)
+    DISCORD_TOKEN = secrets["DISCORD_TOKEN"]
+    API_TOKEN = secrets["API_TOKEN"]
+    del(secrets)
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix=None, intents=intents)
