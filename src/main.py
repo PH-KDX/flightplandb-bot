@@ -7,7 +7,7 @@ with open("../.credentials") as secrets_file:
     secrets = json.load(secrets_file)
     DISCORD_TOKEN = secrets["DISCORD_TOKEN"]
     API_TOKEN = secrets["API_TOKEN"]
-    del(secrets)
+    del secrets
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix=None, intents=intents)

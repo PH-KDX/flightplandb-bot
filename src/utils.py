@@ -10,7 +10,9 @@ class UtilsCog(commands.Cog, name="utils"):
     @app_commands.command(name="ping")
     async def my_command(self, interaction: discord.Interaction) -> None:
         """bot latency ping command"""
-        await interaction.response.send_message(f"{round(self.bot.latency * 1000)} ms", ephemeral=True)
+        await interaction.response.send_message(
+            f"{round(self.bot.latency * 1000)} ms", ephemeral=True
+        )
 
 
 async def setup(bot: commands.Bot) -> None:
